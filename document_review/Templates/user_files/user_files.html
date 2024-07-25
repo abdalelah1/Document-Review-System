@@ -1,0 +1,163 @@
+{% extends "index/index.html" %}
+{% load static %}
+{% block pages %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Files</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrQkTyH0PgTZ8abkM7FJqAZtN0nFgU0Gk6GG+2v6YgB0Z2VGdscb5A09ZjM9fxYySn32kHq8x1wePm7yaA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static 'css/requests.css' %}">
+    <script>
+        function searchById() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("filesTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 1; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[1]; // Second column for ID
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+        <style>
+            #searchInput {
+                width: 20%;
+                font-size: 16px;
+                padding: 12px 20px 12px 40px;
+                border: 1px solid #ddd;
+                margin-bottom: 12px;
+                border-radius: 25px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                outline: none;
+                transition: box-shadow 0.3s ease-in-out;
+            }
+    
+            #searchInput:focus {
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+        </style>
+</head>
+<body>
+<div class="container2">
+    <div class="text-center">
+        <h2 class="my-4">My Files</h2>
+        <input type="text" id="searchInput" onkeyup="searchById()" placeholder="Search for IDs.." title="Type in an ID">
+    </div>
+    <table id="filesTable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>ID</th>
+                <th>File Name</th>
+                <th>File Type</th>
+                <th>Upload Date</th>
+                <th>Review Status</th>
+                <th>Review By</th>
+               
+                        <th>Comment</th>
+
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in files_with_reviews %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.file.id }}</td>
+                <td>{{ item.file.file.name }}</td>
+                <td>{{ item.file.file_type }}</td>
+                <td>{{ item.file.upload_date }}</td>
+                <td>
+                    {{ item.review.operation_type }}
+                </td>
+                <td>
+                    {{ item.review.reviewed_by }} |  {{ item.review.reviewed_by.custom_user.role }}
+                </td>
+                {% if item.review %}
+                    {% if item.review.operation_type == 'reject' %}
+                    <td>{{ item.review.comments }}</td>
+        
+                    {% else %}
+                    <td>N/A</td>
+                    {% endif %}
+                {% endif %}   
+                {% if item.review %}
+                {% if item.review.operation_type == 'pending' %}
+                    <td>Wait</td>
+                {% elif item.review.operation_type == 'request_modification' %}
+                    <td>
+                        <a href="{% url 'review_request_detail' item.review.id %}" class="btn btn-warning">
+                            Click here
+                        </a>
+                    </td>
+                {% elif item.review.operation_type == 'reject' %}
+                    <td>
+                        <a href="{% url 'upload_file'  %}" class="btn btn-danger">
+                            Re-Upload
+                        </a>
+                    </td>
+                {% elif item.review.operation_type == 'accept' %}
+                    <td>Checked</td>
+                {% endif %}
+            {% else %}
+                No Review
+            {% endif %}
+            </tr>
+            {% endfor %}
+
+            {% for review in forwarded_reviews %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ review.file.id }}</td>
+                <td>{{ review.file.file.name }}</td>
+                <td>{{ review.file.file_type }}</td>
+                <td>{{ review.file.upload_date }}</td>
+                <td>
+                    {{ review.operation_type }}
+                </td>
+                <td>
+                    {{ review.reviewed_by }} |  {{ review.reviewed_by.custom_user.role }}
+                </td>
+                {% if review.operation_type == 'reject' or  review.operation_type == 'request_modification' %}
+                <td>{{ review.comments }}</td>
+                {% else %}
+                <td>N/A</td>
+                {% endif %}
+        
+                {% if review.operation_type == 'pending' %}
+                    <td>Wait</td>
+                {% elif review.operation_type == 'request_modification' %}
+                    <td>
+                        <a href="{% url 'review_request_detail' review.id %}" class="btn btn-warning">
+                            Click here
+                        </a>
+                    </td>
+                {% elif review.operation_type == 'reject' %}
+                    <td>
+                        <a href="{% url 'upload_file'  %}" class="btn btn-danger">
+                            Re-Upload
+                        </a>
+                    </td>
+                   
+                {% elif review.operation_type == 'accept' %}
+                    <td>Checked</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+{% endblock pages %}

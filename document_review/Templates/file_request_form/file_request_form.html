@@ -1,0 +1,93 @@
+{% extends "index/index.html" %}
+{% load static %}
+{% block pages %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add File Request</title>
+    <style>
+        /* General container styling */
+        .container2 {
+            width: 90%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Form styling */
+        .form-group {
+            margin-top: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        .form-group button {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            border-radius: 4px;
+            background-color: #007bff;
+            border: none;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-group button:hover {
+            background-color: #0056b3;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group button i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container2">
+        <div class="text-center">
+            <h2 class="my-4">Add File Request</h2>
+        </div>
+        <form method="post" class="form-group">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-group">
+                <label for="requested_from">Requested From Auditor</label>
+                <select id="requested_from" name="requested_from">
+                    {% for auditor in auditors %}
+                        <option value="{{ auditor.id }}">{{ auditor }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {{ form.file_type.label_tag }}
+            {{ form.file_type }}
+            {{ form.description.label_tag }}
+            {{ form.description }}
+            <button type="submit">
+                <i class="fas fa-save"></i> Submit Request
+            </button>
+        </form>
+    </div>
+</body>
+</html>
+{% endblock pages %}

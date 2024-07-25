@@ -1,0 +1,201 @@
+{% extends "index/index.html" %}
+{% load static %}
+{% block pages %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Request Detail</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrQkTyH0PgTZ8abkM7FJqAZtN0nFgU0Gk6GG+2v6YgB0Z2VGdscb5A09ZjM9fxYySn32kHq8x1wePm7yaA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+        }
+
+        .container2 {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #4a90e2;
+        }
+
+        .detail-box, .comments-section, .action-buttons {
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fafafa;
+            border: 1px solid #ddd;
+        }
+
+        .detail-box h3, .comments-section h3, .action-buttons h3 {
+            margin-top: 0;
+            color: #4a90e2;
+        }
+
+        .detail-box p, .comments-section p {
+            margin: 5px 0;
+        }
+
+        .comment-box {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .comment-box p {
+            margin: 5px 0;
+        }
+
+        .comment-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .file-actions {
+            margin-top: 20px;
+        }
+
+        .file-actions a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #4a90e2;
+            padding: 10px 15px;
+            border-radius: 5px;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        .file-actions a:hover {
+            background-color: #357abd;
+        }
+
+        .action-buttons {
+            margin-top: 20px;
+        }
+
+        .reupload-box label, .description-box label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .reupload-box input, .description-box textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .description-box textarea {
+            height: 100px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            color: #fff;
+            background-color: #4a90e2;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 3px #999;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #357abd;
+        }
+
+        .btn:active {
+            background-color: #357abd;
+            box-shadow: 0 2px #666;
+            transform: translateY(2px);
+        }
+    </style>
+</head>
+<body>
+<div class="container2">
+    <h2>Review Request Detail</h2>
+    <div class="detail-box">
+        <h3>Request Information</h3>
+        <p><strong>Request ID:</strong> {{ review_request.id }}</p>
+        <p><strong>File Type:</strong> {{ review_request.file_type.name }}</p>
+        <p><strong>Requested By:</strong> {{ review_request.requested_by.user.username }}</p>
+        <p><strong>Requested From:</strong> {{ review_request.requested_from.user.username }}</p>
+        <p><strong>Request Date:</strong> {{ review_request.request_date }}</p>
+    </div>
+
+
+    <div class="comments-section">
+        <h3>Description</h3>
+        {% if review_request.description %}
+        <div class="comment-box">
+            <p>{{ review_request.description|safe }}</p>
+        </div>
+        
+        {% else %}
+        <p>No response yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="comments-section">
+        <h3>Comments</h3>
+        {% if file_response %}
+        <div class="comment-box">
+            <strong>{{ file_response.file_request.requested_from.user.username }}:</strong>
+            <p>{{ file_response.comments|safe }}</p>
+        </div>
+        <div class="file-actions">
+            <h3>Response File</h3>
+            <a href="{{ file_response.response_file.url }}" target="_blank">
+                <i class="fas fa-download"></i> Open File
+            </a>
+        </div>
+        {% else %}
+        <p>No response yet.</p>
+        {% endif %}
+    </div>
+    
+
+    {% if is_auditor and not file_response %}
+    <div class="action-buttons">
+        <h3>Respond to Request</h3>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="reupload-box">
+                <label for="fileInput">Upload File</label>
+                <input name="response_file" type="file" id="fileInput" accept=".pdf,.doc,.jpg,.jpeg,.png" required>
+            </div>
+            <div class="description-box">
+                <label for="comments" class="form-label">Comments</label>
+                <textarea id="comments" name="comments"></textarea>
+            </div>
+            <button type="submit" class="btn">Submit Response</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js"></script>
+
+</body>
+</html>
+{% endblock pages %}

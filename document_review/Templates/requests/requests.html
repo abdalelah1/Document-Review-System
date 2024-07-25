@@ -1,0 +1,59 @@
+{% extends "index/index.html" %}
+{% load static %}
+{% block pages %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Requests</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrQkTyH0PgTZ8abkM7FJqAZtN0nFgU0Gk6GG+2v6YgB0Z2VGdscb5A09ZjM9fxYySn32kHq8x1wePm7yaA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static 'css/requests.css' %}">
+</head>
+<body>
+<div class="container2">
+    <div class="text-center">
+        <h2 class="my-4">Review Requests</h2>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Request ID</th>
+                <th>File Name</th>
+                <th>Uploaded By</th>
+                <th>Forward by</th>
+                <th>Review By</th>
+                <th>Status</th>
+
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in review_requests %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ request.id }}</td>
+                <td>{{ request.file.file.name }}</td>
+                <td>{{ request.file.uploaded_by.username }}</td>
+                {% if request.forward_by %}
+                <td>{{ request.forward_by }}</td>
+                {% else %}
+                <td>N/A</td>
+                {% endif %}
+                <td>{{ request.reviewed_by }}</td>
+               
+                <td>{{ request.operation_type }}</td>
+                <td>
+                    <a href="{% url 'review_request_detail' request.id %}" class="btn btn-info">
+                        <i class="fas fa-info-circle"></i> Details
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+{% endblock pages %}

@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documents Review System</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script defer src="{% static 'js/scripts.js' %}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+    <div class="header">
+        <button id="toggleSidebar"><i class="fas fa-bars"></i></button>
+        <h1>Documents Review System</h1>
+    </div>
+    <div class="container">
+        {% if user.is_authenticated %}
+        <div class="sidebar" id="sidebar">
+            <div class="teacher-profile">
+                <img src="{% static 'icons/teacher.png' %}" alt="Teacher" class="teacher-icon">
+                <div class="teacher-info">
+                    <h3>{{user}}</h3>
+
+                    <p>
+                        {{user.custom_user.role}}
+                    </p>
+
+                    <br>    
+                    <form id="logout-form" method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <a href="#" onclick="document.getElementById('logout-form').submit();">
+                            <i class="fa fa-sign-out"></i> 
+                        </a>
+                    </form>
+                </div>
+
+            </div>
+            <div class="divider"></div>
+            <ul>
+
+              
+                {% if user.is_authenticated %}
+                {% if user.custom_user.role == 'ASSISTANT' or user.custom_user.role == 'AUDITOR' %}
+                <li><a href="{% url 'upload_file' %}"><i class="fas fa-upload"></i> <span>Upload File</span></a></li>
+                    <li>
+                        <a href="{% url 'user_files' %}">
+                            <i class="fas fa-folder-open"></i> <span>My Files & Requests</span>
+                        </a>
+                    </li>
+                    {% elif user.custom_user.role == 'SUPERVISOR'   %}
+                    <li>
+                        <a href="{% url 'user_files' %}">
+                            <i class="fas fa-folder-open"></i> <span> Requests</span>
+                        </a>
+                    </li>
+                    <li><a href="{% url 'file_requests' %}"><i class="fas fa-file-alt"></i><span>File Requests</span></a></li>
+
+                {% endif %}
+            {% endif %}
+            {% if not  user.custom_user.role == 'ASSISTANT' %}
+            <li><a href="{% url 'review_requests' %}"><i class="fas fa-clipboard-list"></i> <span>Review Requests</span></a></li>
+
+            {% endif %}
+            {% if user.custom_user.role == 'MANAGER' %}
+            <li><a href="{% url 'all_files' %}"><i class="fas fa-folder-open"></i> <span>All Files</span></a></li>
+            <li><a href="{% url 'supervisor_requests' %}"><i class="fas fa-tasks"></i><span>Supervisor Requests</span> </a></li>
+            <li><a href="{% url 'file_requests' %}"><i class="fas fa-file-alt"></i><span>File Requests</span></a></li>
+
+            {% endif %}
+            {% if user.custom_user.role == 'AUDITOR' %}
+            <li><a href="{% url 'manage_requests' %}"><i class="fas fa-tachometer-alt"></i><span>Manage Requests</span></a></li>
+
+            {% endif %}
+
+
+                <!-- <li><a href="#"><i class="fas fa-cogs"></i> <span>Settings</span></a></li> -->
+                <!-- <li><a href="#"><i class="fas fa-chart-line"></i> <span>Reports</span></a></li>
+                <li><a href="#"><i class="fas fa-users"></i> <span>Users</span></a></li> -->
+                
+                  
+
+
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="main-content">
+          
+          {% block pages %}
+            
+          {% endblock pages %}
+            
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f0f4f8;
+    color: #333;
+}
+
+.header {
+    background: linear-gradient(90deg, #56ccf2, #2f80ed);
+    color: white;
+    padding: 1px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#toggleSidebar {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh; /* يضمن أن الحاوية تمتد على طول الشاشة */
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #3498db;
+    overflow-y: auto; /* يتيح التمرير في الشريط الجانبي إذا كان المحتوى طويلًا */
+    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    position: relative;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+.sidebar ul li a:hover {
+    background-color: #2980b9;
+    color: #d1ecf1;
+}
+
+.sidebar ul li a i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.sidebar ul li a span {
+    margin-left: 10px;
+    font-size: 16px;
+}
+
+.sidebar ul .submenu {
+    display: none;
+    list-style-type: none;
+    padding-left: 30px; /* تعديل على padding-left */
+}
+
+.sidebar ul .submenu.open {
+    display: block;
+}
+
+.sidebar ul .submenu li a {
+    padding: 15px 20px; /* تعديل على padding */
+    background-color: #2980b9; /* لون الخلفية للعناصر الفرعية */
+    display: flex;
+    align-items: center;
+}
+
+.sidebar ul .submenu li a:hover {
+    background-color: #2574a9;
+}
+
+.sidebar ul .submenu li a i {
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    overflow: auto; /* يتيح التمرير في المحتوى الرئيسي إذا كان المحتوى طويلًا */
+}
+.content-header {
+    background: linear-gradient(90deg, #56ccf2, #2f80ed);
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.content-body {
+    margin-top: 20px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.closed {
+    width: 60px;
+}
+
+.sidebar.closed .teacher-profile {
+    display: none;
+}
+
+.sidebar.closed ul li {
+    text-align: center;
+    padding: 10px 0;
+}
+
+.sidebar.closed ul li a {
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.sidebar.closed ul li a i {
+    margin-right: 0;
+}
+
+.sidebar.closed ul li a span {
+    display: none;
+}
+
+.sidebar.closed ul .submenu {
+    display: none;
+}
+
+.teacher-profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.teacher-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.teacher-info h3 {
+    margin: 0;
+    font-size: 18px;
+    color: white;
+}
+
+.teacher-info p {
+    margin: 0;
+    font-size: 14px;
+    color: white;
+}
+
+.divider {
+    border-bottom: 1px dotted white;
+    margin-bottom: 20px;
+}
+.logout-btn {
+    display: flex;
+    align-items: center;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.logout-btn i {
+    margin-right: 5px;
+}
+
+
+
+/* login */
+.login-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    margin: 0 auto; /* لضمان توسيط الحاوية */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-box {
+    text-align: center;
+    width: 100%;
+}
+
+.login-header {
+    background: linear-gradient(90deg, #56ccf2, #2f80ed);
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #56ccf2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+    background-color: #2f80ed;
+}
+/* end login */

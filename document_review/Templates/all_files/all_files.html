@@ -1,0 +1,133 @@
+{% extends "index/index.html" %}
+{% load static %}
+{% block pages %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Reviewed Files</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrQkTyH0PgTZ8abkM7FJqAZtN0nFgU0Gk6GG+2v6YgB0Z2VGdscb5A09ZjM9fxYySn32kHq8x1wePm7yaA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static 'css/requests.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container2 {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .header2 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header2 h2 {
+            margin: 0;
+            font-size: 36px;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table th, table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #f8f8f8;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #fff;
+            background-color: #007bff;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+        .reviewers {
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        .reviewers-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .reviewers-list li {
+            display: inline;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container2">
+        <div class="header2">
+            <h2>All Reviewed Files</h2>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>ID</th>
+                    <th>File Name</th>
+                    <th>File Type</th>
+                    <th>Upload Date</th>
+                    <th>Reviewers</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in files_with_reviews %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.file.id }}</td>
+                    <td>{{ item.file.file.name }}</td>
+                    <td>{{ item.file.file_type }}</td>
+                    <td>{{ item.file.upload_date }}</td>
+                    <td>
+                        <ul class="reviewers-list">
+                            {% for reviewer in item.reviewers %}
+                            <li>({{ reviewer }} || {{reviewer.custom_user.role}}) </li> <br>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>
+                        <a href="{{ item.file.file.url }}" class="btn btn-primary">
+                            <i class="fas fa-download"></i> 
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </body>
+    </html>
+    {% endblock pages %}

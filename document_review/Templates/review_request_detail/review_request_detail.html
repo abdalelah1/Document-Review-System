@@ -1,0 +1,214 @@
+{% extends "index/index.html" %}
+{% load static %}
+{% block pages %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Request Detail</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrQkTyH0PgTZ8abkM7FJqAZtN0nFgU0Gk6GG+2v6YgB0Z2VGdscb5A09ZjM9fxYySn32kHq8x1wePm7yaA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static 'css/review_request.css' %}">
+    <script src="{% static 'tinymce/tinymce.min.js' %}"></script>
+
+    <style>
+        .comment-box {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .comment-box p {
+            margin: 5px 0;
+        }
+
+        .comment-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .reupload-box {
+            margin-top: 20px;
+        }
+
+        .description-box {
+            margin-top: 20px;
+        }
+
+        .action-buttons {
+            margin-top: 20px;
+        }
+
+        .detail-box {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f1f1f1;
+        }
+
+        .detail-box p {
+            margin: 5px 0;
+        }
+
+        .detail-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .file-actions {
+            margin-top: 20px;
+        }
+
+        .file-actions a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #007bff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .alert {
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .alert-danger {
+            background-color: #dc3545;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border-radius: 5px;
+            color: #fff;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+<div class="container2">
+    <h2>Review Request Detail</h2>
+    <div class="detail-box">
+        <h3>Request Information</h3>
+        <p><strong>Request ID:</strong> {{ review_request.id }}</p>
+        <p><strong>File Name:</strong> {{ file.file.name }}</p>
+        <p><strong>Uploaded By:</strong> {{ file.uploaded_by.username }}</p>
+        <p><strong>Status:</strong> {{ review_request.operation_type }}</p>
+        <p><strong>Operation Date:</strong> {{ review_request.operation_date }}</p>
+    </div>
+
+    <div class="file-actions">
+        <h3>File Actions</h3>
+        {% if file.file %}
+        <a href="{{ file.file.url }}" target="_blank" class="btn btn-primary"><i class="fas fa-download"></i> Open File</a>
+        {% endif %}
+    </div>
+
+    {% if error_message %}
+    <div class="alert alert-danger">{{ error_message }}</div>
+    {% endif %}
+
+    <div class="description-box">
+        <h3>File Description</h3>
+        <div class="comment-box">
+            {{ file.description|safe }}
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <h3>Actions</h3>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if review_request.operation_type == 'request_modification' and file.uploaded_by == user %}
+            <div class="comments-section">
+                <h3>Comments</h3>
+                <div class="comment-box">
+                    <strong>{{ review_request.reviewed_by }} |{{ review_request.reviewed_by.custom_user.role }} :</strong>
+                    <p>{{ review_request.comments }}</p>
+                </div>
+            </div>
+                <div class="reupload-box">
+                    <label for="fileInput">Re-upload File</label>
+                    <input name="file" type="file" id="fileInput" accept=".pdf,.doc,.jpg,.jpeg,.png" required>
+                </div>
+                <div class="description-box">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" name="description">{{ file.description|safe }}</textarea>
+                </div>
+                <button type="submit" name="confirm" value="confirm" class="btn btn-success">Confirm</button>
+            {% else %}
+            {% if user.custom_user.role == 'MANAGER' %}
+                <textarea id="commentInput" name="comments" class="comment-input" placeholder="Add your comment here" required></textarea>
+                <button class="acceptBtn" type="submit" name="accept-directly" value="accept-directly" class="btn btn-warning">Accept Directly</button>
+                <button type="submit" name="reject" value="reject" class="btn btn-danger">Reject</button>
+            {% elif user.custom_user.role == 'SUPERVISOR' %}
+                <textarea id="commentInput" name="comments" class="comment-input" placeholder="Add your comment here" required></textarea>
+                <button class="acceptBtn" type="submit" name="accept-directly" value="accept-directly" class="btn btn-warning">Accept Directly</button>
+
+                <button class="acceptBtn" type="submit" name="accept" value="accept" class="btn btn-primary">Accept & Forward</button>
+                <button type="submit" name="reject" value="reject" class="btn btn-danger">Reject</button>
+            {% elif user.custom_user.role == 'AUDITOR' %}
+                <textarea id="commentInput" name="comments" class="comment-input" placeholder="Add your comment here" required></textarea>
+                <button class="acceptBtn" type="submit" name="accept" value="accept" class="btn btn-primary">Accept & Forward</button>
+                <button type="submit" name="reject" value="reject" class="btn btn-danger">Reject</button>
+                <button type="submit" name="request_modification" value="request_modification" class="btn btn-warning">Request Modification</button>
+            {% endif %}
+        {% endif %}
+        </form>
+    </div>
+</div>
+<script src="{% static 'js/upload_file.js' %}"></script>
+<script>
+    tinymce.init({
+        selector: 'textarea#description',
+        menubar: false,
+        plugins: 'lists link image preview',
+        toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image'
+    });
+</script>
+<script>
+    var acceptButtons = document.getElementsByClassName('acceptBtn');
+    Array.from(acceptButtons).forEach(function(button) {
+        button.addEventListener('click', function() {
+            var commentInput = document.getElementById('commentInput');
+            if (commentInput) {
+                commentInput.required = false;
+            }
+        });
+    });
+</script>
+</body>
+</html>
+{% endblock pages %}

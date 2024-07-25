@@ -1,0 +1,77 @@
+{% extends "index/index.html" %}
+{% load static %}
+{% block pages %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervisor Requests</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrQkTyH0PgTZ8abkM7FJqAZtN0nFgU0Gk6GG+2v6YgB0Z2VGdscb5A09ZjM9fxYySn32kHq8x1wePm7yaA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static 'css/requests.css' %}">
+</head>
+<body>
+<div class="container2">
+    <h2 class="text-center">Supervisor Requests</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>ID</th>
+                <th>File Name</th>
+                <th>File Type</th>
+                <th>Upload Date</th>
+                <th>Reviewers</th>
+                <th>Status</th>
+                <th>Actions</th>
+                <th>Comments</th>  <!-- عمود التعليقات -->
+        
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in files_with_reviews %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.file.id }}</td>
+                <td>{{ item.file.file.name }}</td>
+                <td>{{ item.file.file_type }}</td>
+                <td>{{ item.file.upload_date }}</td>
+                <td>
+                    <ul class="reviewers">
+                        {% for reviewer in item.reviewers %}
+                        <li>{{ reviewer }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+               
+                <td>
+                    {% if item.current_status == 'request_modification' %}
+                        Modification Requested
+                    {% elif item.current_status == 'reject' %}
+                        Rejected
+                    {% else %}
+                        Pending
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ item.file.file.url }}" target="_blank" class="btn btn-small btn-primary">
+                        <i class="fas fa-download"></i> 
+                    </a>
+                </td>  
+                <td>
+                    {% if item.comments   %}
+                    {{ item.comments }}
+                    {% else %}
+                    N/A
+                    {% endif %}
+                  
+                </td>
+        
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+{% endblock pages %}

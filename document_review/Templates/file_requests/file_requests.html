@@ -1,0 +1,127 @@
+{% extends "index/index.html" %}
+{% load static %}
+{% block pages %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Requests</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrQkTyH0PgTZ8abkM7FJqAZtN0nFgU0Gk6GG+2v6YgB0Z2VGdscb5A09ZjM9fxYySn32kHq8x1wePm7yaA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static 'css/requests.css' %}">
+
+    <style>
+        /* Button styling */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            border-radius: 4px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-info {
+            background-color: #17a2b8;
+        }
+
+        .btn-info:hover {
+            background-color: #117a8b;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        /* Text alignment */
+        .text-right {
+            text-align: right;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+<div class="container2">
+    <div class="text-center">
+        <h2 class="my-4">File Requests</h2>
+    </div>
+    <div class="text-right my-3">
+        <a href="{% url 'add_file_request' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add New Request
+        </a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Request ID</th>
+                <th>File Type</th>
+                <th>Description</th>
+                <th>Requested By</th>
+                <th>Requested From</th> <!-- New column added here -->
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in requests %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ request.id }}</td>
+                <td>{{ request.file_type.name }}</td>
+                <td>{{ request.description|safe }}</td>
+                <td>{{ request.requested_by }}</td>
+                <td>{{ request.requested_from }}</td>
+                <td>
+                    {% if request.response %}
+                        Responded
+                    {% else %}
+                        Pending
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'request_detail' request.id %}" class="btn btn-info">
+                        <i class="fas fa-info-circle"></i> Details
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+{% endblock pages %}

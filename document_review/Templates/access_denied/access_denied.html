@@ -1,0 +1,22 @@
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrQkTyH0PgTZ8abkM7FJqAZtN0nFgU0Gk6GG+2v6YgB0Z2VGdscb5A09ZjM9fxYySn32kHq8x1wePm7yaA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+<body>
+<div class="container2">
+    <h2 class="my-4 text-center" style="color: red;">Access Denied</h2>
+    <p class="text-center">You do not have permission to access this page.</p>
+    <div class="text-center">
+        <a href="{% url 'home' %}" class="btn btn-primary"><i class="fas fa-home"></i> Return to Home</a>
+    </div>
+</div>
+</body>
+</html>
+{% endblock content %}
